@@ -44,6 +44,12 @@ namespace SmartyStreetsTests
            Assert.Equal(resultUsingFreeForm.Analysis.DpvMatchCode, resultUsingComponent.Analysis.DpvMatchCode);
            Assert.Equal(resultUsingFreeForm.Analysis.Footnotes, resultUsingComponent.Analysis.Footnotes);
            Assert.Equal(resultUsingFreeForm.Analysis.DpvFootnotes, resultUsingComponent.Analysis.DpvFootnotes);
+
+
+           var (isValid, validationMessages) = resultUsingFreeForm.Analysis.ToValidationResult();
+           
+            Assert.False(isValid);
+
         }
 
 
