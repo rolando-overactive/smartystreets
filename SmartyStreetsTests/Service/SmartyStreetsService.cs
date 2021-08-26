@@ -13,7 +13,7 @@ namespace SmartyStreetsTests.Service
     public interface ISmartyStreetsService
     {
         public Task<Candidate> SearchPlacesAsync(StreetDto propertyAddress);
-        public Task<Candidate> SearchPlacesAsync(string address);
+        public Task<Candidate> SearchPlacesAsync(string address, string matchStrategy);
 
     }
 
@@ -28,13 +28,13 @@ namespace SmartyStreetsTests.Service
         }
 
 
-        public async Task<Candidate> SearchPlacesAsync(string address)
+        public async Task<Candidate> SearchPlacesAsync(string address, string matchStrategy)
         {
             var lookup = new Lookup
             {
                 Street = address,
                 MaxCandidates = 1,
-                MatchStrategy = Lookup.STRICT
+                MatchStrategy = matchStrategy
             };
             return await Search(lookup);
         }
@@ -50,7 +50,7 @@ namespace SmartyStreetsTests.Service
                 ZipCode = propertyAddress.ZipCode,
                 Street2 = propertyAddress.Street2, // Check if we can rename this property
                 MaxCandidates = 1,
-                MatchStrategy = Lookup.STRICT
+                MatchStrategy = propertyAddress.MatchStrategy
             };
             return await Search(lookup);
         }

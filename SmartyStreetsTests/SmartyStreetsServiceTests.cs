@@ -1,9 +1,11 @@
 using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SmartyStreets.InternationalStreetApi;
 using Xunit;
 
 using SmartyStreetsTests.Service;
+using Lookup = SmartyStreets.USStreetApi.Lookup;
 
 namespace SmartyStreetsTests
 {
@@ -24,31 +26,42 @@ namespace SmartyStreetsTests
         }
 
         [Fact]
-        public async void SearchPlacesAsync_()
+        public async void SearchPlacesAsync_UsingEnhancedMatch_Fail()
         {
-            var resultUsingComponent = await SmartyStreetsService.SearchPlacesAsync(new StreetDto()
+            var streetAddress= new StreetDto()
             {
-                City = "Baltimore",
+                City = "BALTIMORE",
                 State = "MD",
-                Street = "1 Rosedale",
-                Street2 = string.Empty,
-                ZipCode = "21229"
+                Street = "1 ROSEDALE",
+                Street2 = null,
+                ZipCode = "21229",
+                MatchStrategy = Lookup.ENHANCED
+            };
 
-            });
+            var resultUsingComponent = await SmartyStreetsService.SearchPlacesAsync(streetAddress);
 
-            var resultUsingFreeForm = await SmartyStreetsService.SearchPlacesAsync("1 Rosedale Baltimore MD 21229");
+            Assert.NotNull(resultUsingComponent.Analysis.Footnotes);
+            Assert.NotNull(resultUsingComponent.Analysis.DpvFootnotes);
 
-           Assert.NotNull(resultUsingFreeForm);
-           Assert.NotNull(resultUsingComponent);
+        }
 
-           Assert.Equal(resultUsingFreeForm.Analysis.DpvMatchCode, resultUsingComponent.Analysis.DpvMatchCode);
-           Assert.Equal(resultUsingFreeForm.Analysis.Footnotes, resultUsingComponent.Analysis.Footnotes);
-           Assert.Equal(resultUsingFreeForm.Analysis.DpvFootnotes, resultUsingComponent.Analysis.DpvFootnotes);
+        [Fact]
+        public async void SearchPlacesAsync_UsingStrictMatch_Pass()
+        {
+            var streetAddress = new StreetDto()
+            {
+                City = "BALTIMORE",
+                State = "MD",
+                Street = "1 ROSEDALE",
+                Street2 = null,
+                ZipCode = "21229",
+                MatchStrategy = Lookup.STRICT
+            };
 
+            var resultUsingComponent = await SmartyStreetsService.SearchPlacesAsync(streetAddress);
 
-           var (isValid, validationMessages) = resultUsingFreeForm.Analysis.ToValidationResult();
-           
-            Assert.False(isValid);
+            Assert.NotNull(resultUsingComponent.Analysis.Footnotes);
+            Assert.NotNull(resultUsingComponent.Analysis.DpvFootnotes);
 
         }
 
