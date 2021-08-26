@@ -40,8 +40,11 @@ namespace SmartyStreetsTests
 
             var resultUsingComponent = await SmartyStreetsService.SearchPlacesAsync(streetAddress);
 
-            Assert.NotNull(resultUsingComponent.Analysis.Footnotes); //should return L#E#I#
+
+            Assert.NotNull(resultUsingComponent.Analysis.Footnotes);
+            Assert.Equal("L#E#I#", resultUsingComponent.Analysis.Footnotes);
             Assert.NotNull(resultUsingComponent.Analysis.DpvFootnotes);
+            Assert.Equal("AABB", resultUsingComponent.Analysis.DpvFootnotes);
 
         }
 
@@ -60,9 +63,11 @@ namespace SmartyStreetsTests
 
             var resultUsingComponent = await SmartyStreetsService.SearchPlacesAsync(streetAddress);
 
-            Assert.NotNull(resultUsingComponent.Analysis.Footnotes);
+            Assert.NotNull(resultUsingComponent.Analysis.Footnotes); 
+            Assert.Equal("L#E#I#", resultUsingComponent.Analysis.Footnotes);
             Assert.NotNull(resultUsingComponent.Analysis.DpvFootnotes);
-
+            Assert.Equal("AABB", resultUsingComponent.Analysis.DpvFootnotes);
+            
         }
 
 
